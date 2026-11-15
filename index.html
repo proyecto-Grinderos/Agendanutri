@@ -27,7 +27,7 @@
   <!-- CABECERA PRINCIPAL                                                    -->
   <!-- ===================================================================== -->
   <header class="w-full bg-[#E6E2D6] border-b border-[#B5AE9E] px-4 sm:px-8 py-3.5">
-    <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+    <div class="w-full flex items-center justify-between gap-4">
       <a href="#inicio" onclick="navigateView('client'); return false;" class="flex items-center gap-3 focus:outline-none">
         <div class="w-9 h-9 rounded-xl bg-[#065F46] text-[#E6E2D6] flex items-center justify-center shadow-sm flex-shrink-0">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -50,10 +50,10 @@
           type="button"
           onclick="toggleAdminClientQuick()"
           id="header-badge"
-          title="Alternar vista Paciente / Nutricionista"
-          class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-[#D6D1C4] hover:bg-[#C8C2B3] text-[#065F46] border border-[#B5AE9E] transition cursor-pointer"
+          title="Volver a la vista de Paciente"
+          class="hidden text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-[#D6D1C4] hover:bg-[#C8C2B3] text-[#065F46] border border-[#B5AE9E] transition cursor-pointer"
         >
-          Ver Panel #admin
+          ← Volver a Paciente
         </button>
       </div>
     </div>
@@ -1138,6 +1138,7 @@
         adminMain.classList.remove('hidden');
         headerSubtitle.textContent = 'Panel Privado de Agenda y Fichas';
         headerBadge.textContent = '← Volver a Paciente';
+        headerBadge.classList.remove('hidden');
 
         if (currentSessionUser) {
           document.getElementById('admin-login-gate').classList.add('hidden');
@@ -1152,7 +1153,7 @@
         adminMain.classList.add('hidden');
         clientMain.classList.remove('hidden');
         headerSubtitle.textContent = 'Agendamiento directo en línea';
-        headerBadge.textContent = 'Ver Panel #admin';
+        headerBadge.classList.add('hidden');
         renderCalendar();
         if (selectedDateStr) handleDayClick(selectedDateStr);
       }
@@ -2031,6 +2032,11 @@
       }
 
       await loadNutricionistaFromSupabase();
+      const hasAdminHash = window.location.hash.toLowerCase().includes('admin');
+      navigateView(hasAdminHash ? 'admin' : 'client');
+    });
+
+    window.addEventListener('hashchange', () => {
       const hasAdminHash = window.location.hash.toLowerCase().includes('admin');
       navigateView(hasAdminHash ? 'admin' : 'client');
     });
