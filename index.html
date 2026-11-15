@@ -28,7 +28,7 @@
   <!-- ===================================================================== -->
   <header class="w-full bg-[#E6E2D6] border-b border-[#B5AE9E] px-4 sm:px-8 py-3.5">
     <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
-      <a href="#" onclick="navigateView('client'); return false;" class="flex items-center gap-3 focus:outline-none">
+      <a href="#inicio" onclick="navigateView('client'); return false;" class="flex items-center gap-3 focus:outline-none">
         <div class="w-9 h-9 rounded-xl bg-[#065F46] text-[#E6E2D6] flex items-center justify-center shadow-sm flex-shrink-0">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -53,7 +53,7 @@
           title="Alternar vista Paciente / Nutricionista"
           class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-[#D6D1C4] hover:bg-[#C8C2B3] text-[#065F46] border border-[#B5AE9E] transition cursor-pointer"
         >
-          Sin Registro
+          Ver Panel #admin
         </button>
       </div>
     </div>
@@ -407,7 +407,7 @@
           <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
             <a
               id="btn-add-google-calendar"
-              href="#"
+              href="#calendar"
               target="_blank"
               rel="noopener noreferrer"
               class="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#065F46] hover:bg-[#047857] text-[#E6E2D6] font-display font-bold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-2 active:scale-[0.99]"
@@ -435,36 +435,57 @@
   <!-- ===================================================================== -->
   <main id="view-admin" class="hidden flex-1 w-full max-w-4xl mx-auto px-4 py-6 sm:py-10 space-y-6">
 
-    <!-- Gate de Acceso con Clave -->
+    <!-- Gate de Acceso con Supabase Auth -->
     <section id="admin-login-gate" class="max-w-md mx-auto bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-6 shadow-sm space-y-4">
       <div class="text-center space-y-1">
         <span class="inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#D6D1C4] text-[#065F46] border border-[#B5AE9E]">
           Acceso Profesional
         </span>
         <h2 class="font-display text-lg font-extrabold text-stone-900 pt-1">Panel de Agenda y Fichas</h2>
-        <p class="text-xs text-stone-600">Ingresa tu clave privada para administrar tus horarios y pacientes.</p>
+        <p class="text-xs text-stone-600">Ingresa con tu correo y contraseña de acceso profesional.</p>
       </div>
 
       <form onsubmit="handleAdminLogin(event)" class="space-y-3">
+        <div>
+          <label for="admin-email-input" class="block text-xs font-bold text-stone-800 mb-1">Correo electrónico</label>
+          <input
+            id="admin-email-input"
+            type="email"
+            required
+            placeholder="tu.correo@ejemplo.cl"
+            class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 outline-none focus:border-[#065F46]"
+          />
+        </div>
         <div>
           <label for="admin-password-input" class="block text-xs font-bold text-stone-800 mb-1">Contraseña</label>
           <input
             id="admin-password-input"
             type="password"
             required
-            placeholder="Clave demo: nutri2026"
+            placeholder="Tu contraseña privada"
             class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 outline-none focus:border-[#065F46]"
           />
         </div>
-        <p id="admin-login-error" class="hidden text-xs font-bold text-red-900 bg-red-800/15 border border-red-900/30 p-2.5 rounded-xl">
-          Contraseña incorrecta. Usa "nutri2026" para la vista previa.
-        </p>
+        <p id="admin-login-error" class="hidden text-xs font-bold text-red-900 bg-red-800/15 border border-red-900/30 p-2.5 rounded-xl"></p>
+        <p id="admin-reset-feedback" class="hidden text-xs font-bold text-[#065F46] bg-emerald-800/15 border border-[#065F46]/30 p-2.5 rounded-xl"></p>
+
         <button
+          id="btn-admin-login"
           type="submit"
           class="w-full py-3 bg-[#065F46] hover:bg-[#047857] text-[#E6E2D6] font-display font-bold rounded-xl text-sm shadow-sm transition"
         >
           Entrar al Panel →
         </button>
+
+        <div class="text-center pt-1">
+          <button
+            type="button"
+            onclick="handleForgotPassword()"
+            class="text-xs font-semibold text-[#065F46] hover:underline"
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
+        </div>
       </form>
     </section>
 
@@ -475,7 +496,7 @@
       <section class="bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <span class="text-[11px] font-bold uppercase tracking-wider text-[#065F46]">Gestión Clínica</span>
-          <h2 class="font-display text-xl font-extrabold text-stone-900">Agenda y Fichas de Pacientes</h2>
+          <h2 id="admin-pro-heading" class="font-display text-xl font-extrabold text-stone-900">Agenda y Fichas de Pacientes</h2>
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5">
@@ -495,6 +516,20 @@
             <span>📥</span>
             <span>Respaldo Excel (.csv)</span>
           </button>
+          <button
+            type="button"
+            onclick="openChangePasswordModal()"
+            class="px-3 py-2.5 rounded-xl bg-[#D6D1C4] hover:bg-[#C8C2B3] text-stone-900 border border-[#B5AE9E] text-xs font-bold transition"
+          >
+            🔑 Cambiar clave
+          </button>
+          <button
+            type="button"
+            onclick="handleAdminLogout()"
+            class="px-3 py-2.5 rounded-xl bg-red-800/10 hover:bg-red-800/20 text-red-900 border border-red-900/20 text-xs font-bold transition"
+          >
+            Salir
+          </button>
         </div>
       </section>
 
@@ -508,7 +543,6 @@
             <p class="text-xs text-stone-600">Agrega o quita las horas en las que atiendes normalmente cada día.</p>
           </div>
 
-          <!-- Selector cómodo de Hora + Minutos -->
           <div class="flex flex-wrap items-center gap-2">
             <select id="admin-slot-hour" aria-label="Hora" class="px-3 py-2 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-xs font-bold text-stone-900 outline-none focus:border-[#065F46]">
               <option value="08">08 hrs</option>
@@ -542,7 +576,6 @@
             </button>
           </div>
 
-          <!-- Atajos de 1 clic -->
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
             <span class="text-[11px] text-stone-600 font-semibold mr-1">Atajos rápidos:</span>
             <button type="button" onclick="applyAdminSlotPreset('morning')" class="px-2.5 py-1 rounded-lg bg-[#D6D1C4] hover:bg-[#C8C2B3] text-stone-800 border border-[#B5AE9E] text-[11px] font-bold transition">
@@ -559,7 +592,6 @@
             </button>
           </div>
 
-          <!-- Chips de horas activas -->
           <div id="admin-daily-slots-list" class="flex flex-wrap gap-2 pt-2 border-t border-[#B5AE9E]/60"></div>
         </div>
 
@@ -603,6 +635,29 @@
 
     </div>
   </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL PARA CAMBIAR CONTRASEÑA (SUPABASE AUTH)                         -->
+  <!-- ===================================================================== -->
+  <div id="change-password-modal" class="fixed inset-0 bg-stone-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#E6E2D6] rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-[#B5AE9E] space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-[#B5AE9E]">
+        <h3 class="font-display font-bold text-stone-900 text-base">Cambiar contraseña</h3>
+        <button type="button" onclick="closeChangePasswordModal()" class="w-8 h-8 rounded-lg bg-[#D6D1C4] hover:bg-[#C8C2B3] text-stone-900 font-bold text-lg flex items-center justify-center">&times;</button>
+      </div>
+      <form onsubmit="handleChangePasswordSubmit(event)" class="space-y-3">
+        <div>
+          <label for="new-password-input" class="block text-xs font-bold text-stone-800 mb-1">Nueva contraseña (mín. 6 caracteres)</label>
+          <input id="new-password-input" type="password" minlength="6" required placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 outline-none focus:border-[#065F46]" />
+        </div>
+        <p id="change-password-feedback" class="hidden text-xs font-bold p-2.5 rounded-xl"></p>
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" onclick="closeChangePasswordModal()" class="px-4 py-2 rounded-xl bg-[#D6D1C4] hover:bg-[#C8C2B3] text-stone-900 border border-[#B5AE9E] text-xs font-semibold transition">Cancelar</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-[#065F46] hover:bg-[#047857] text-[#E6E2D6] text-xs font-bold transition">Guardar clave</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- ===================================================================== -->
   <!-- MODAL DE CONFIRMACIÓN PARA ELIMINAR RESERVA                           -->
@@ -677,11 +732,18 @@
   <!-- ===================================================================== -->
   <script>
     // =======================================================================
-    // 1. CONFIGURACIÓN DE SUPABASE (Credenciales reales del proyecto)
+    // 1. CONFIGURACIÓN DE SUPABASE (Reemplaza con tus credenciales reales)
     // =======================================================================
     const SUPABASE_URL = 'https://ninyvnpczsixsawxscov.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_j_SWYDwWgN4ntxyO37P1GA_cB-PLfsf';
-    const db = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    const isSupabaseConfigured =
+      typeof window.supabase !== 'undefined' &&
+      !SUPABASE_URL.includes('TU-PROYECTO') &&
+      !SUPABASE_ANON_KEY.includes('TU-ANON-KEY');
+
+    const db = isSupabaseConfigured
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
 
     // Perfil del profesional activo (se sobreescribe al consultar Supabase por ?pro=slug)
     let activeNutriProfile = {
@@ -703,81 +765,95 @@
     let viewMonth = nowInit.getMonth();
     let selectedDateStr = null;
     let selectedTimeSlot = null;
+    let uploadedReceiptFile = null;
     let uploadedReceiptDataUrl = null;
     let uploadedReceiptName = '';
 
-    let verifiedAdminPassword = null;
+    let currentSessionUser = null;
+    let adminNutriId = null;
     let pendingDeleteId = null;
 
     // Horarios habituales configurables por la nutricionista
     let DAILY_SLOTS = ['09:30 hrs', '11:00 hrs', '12:30 hrs', '15:30 hrs', '17:00 hrs', '18:30 hrs'];
-
-    // Bloqueos manuales configurados por la nutricionista en #admin
     let blockedFullDates = [];
     let blockedSpecificSlots = {};
+    // Horas ocupadas obtenidas desde get_horas_ocupadas() en Supabase (formato 'YYYY-MM-DD|HH:MM hrs')
+    let occupiedSupabaseKeys = new Set();
 
-    // Carga del perfil del profesional y sus citas desde Supabase
+    // Imagen SVG de respaldo para vista previa local sin conexión
+    const DEMO_RECEIPT_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="420" height="520" viewBox="0 0 420 520"><rect width="420" height="520" rx="16" fill="#F3EFE4"/><rect x="24" y="24" width="372" height="472" rx="12" fill="none" stroke="#065F46" stroke-width="2" stroke-dasharray="8 6"/><text x="210" y="240" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="bold" fill="#065F46">Comprobante Demo</text><text x="210" y="270" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#44403C">Vista previa local</text></svg>'
+    );
+
+    // -----------------------------------------------------------------------
+    // CARGA DE PERFIL Y HORAS OCUPADAS DESDE SUPABASE
+    // -----------------------------------------------------------------------
     async function loadNutricionistaFromSupabase() {
       const slug = new URLSearchParams(window.location.search).get('pro');
-      if (!db) {
+      if (!slug || !db) {
         applyNutriProfileToUI(activeNutriProfile);
         return;
       }
 
       try {
-        if (slug) {
-          const { data: nutri, error } = await db
-            .from('nutricionistas')
-            .select('id, nombre, datos_transferencia, valor_consulta, duracion_min')
-            .eq('slug', slug)
-            .single();
+        const { data: nutri, error } = await db
+          .from('nutricionistas')
+          .select('id, nombre, datos_transferencia, valor_consulta, duracion_min')
+          .eq('slug', slug)
+          .single();
 
-          if (!error && nutri) {
-            activeNutriProfile = { ...activeNutriProfile, ...nutri };
-          }
+        if (error) {
+          console.warn('No se pudo cargar el perfil desde Supabase:', error.message);
+          applyNutriProfileToUI(activeNutriProfile);
+          return;
         }
-        applyNutriProfileToUI(activeNutriProfile);
-        await loadAppointmentsFromSupabase();
+
+        if (nutri) {
+          activeNutriProfile = { ...activeNutriProfile, ...nutri };
+          applyNutriProfileToUI(activeNutriProfile);
+          await loadOccupiedSlotsFromSupabase(nutri.id);
+        }
       } catch (err) {
         console.error('Error conectando con Supabase:', err);
         applyNutriProfileToUI(activeNutriProfile);
       }
     }
 
-    // Lee las reservas existentes en Supabase desde la tabla 'comprobantes'
-    async function loadAppointmentsFromSupabase() {
-      if (!db) return;
+    async function loadOccupiedSlotsFromSupabase(nutriId) {
+      if (!db || !nutriId) return;
       try {
-        let query = db.storage.from('comprobantes').select('*').order('created_at', { ascending: false });
-        if (activeNutriProfile.id) {
-          query = query.eq('nutricionista_id', activeNutriProfile.id);
+        const { data, error } = await db.rpc('get_horas_ocupadas', {
+          p_nutricionista_id: nutriId
+        });
+        if (error) {
+          console.warn('Error cargando horas ocupadas:', error.message);
+          return;
         }
-        const { data, error } = await query;
-        if (!error && Array.isArray(data)) {
-          appointmentsStore = data.map(row => ({
-            id: row.id,
-            nutricionista_id: row.nutricionista_id || null,
-            date: row.fecha || row.date,
-            time: row.hora || row.time,
-            service: row.servicio || row.service || 'Consulta Nutricional',
-            price: row.precio || row.price || formatClp(row.valor || activeNutriProfile.valor_consulta),
-            paymentMethod: row.metodo_pago || row.paymentMethod || 'Transferencia',
-            fullname: row.paciente_nombre || row.nombre || row.fullname || 'Paciente',
-            rut: row.rut || '',
-            dob: row.fecha_nacimiento || row.dob || '',
-            phone: row.telefono || row.phone || '',
-            email: row.correo || row.email || '',
-            address: row.direccion || row.address || '',
-            goals: row.objetivos || row.goals || '',
-            supplements: row.suplementos || row.supplements || '',
-            status: row.estado || row.status || 'Pendiente',
-            receiptImg: row.comprobante_url || row.receiptImg || null
-          }));
-          renderCalendar();
-        }
+        occupiedSupabaseKeys = new Set(
+          (data || []).map(row => formatIsoToSlotKey(row.fecha_hora))
+        );
+        renderCalendar();
       } catch (err) {
-        console.warn('No se pudieron leer las citas desde Supabase:', err);
+        console.error('Error en get_horas_ocupadas:', err);
       }
+    }
+
+    function formatIsoToSlotKey(isoStr) {
+      const d = new Date(isoStr);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      return `${y}-${m}-${day}|${hh}:${mm} hrs`;
+    }
+
+    function buildIsoFromDateAndSlot(dateStr, timeSlot) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const match = timeSlot.match(/(\d{1,2}):(\d{2})/);
+      const hh = match ? parseInt(match[1], 10) : 9;
+      const mm = match ? parseInt(match[2], 10) : 0;
+      return new Date(y, m - 1, d, hh, mm, 0).toISOString();
     }
 
     function formatClp(amount) {
@@ -820,7 +896,6 @@
       selectService(srv1Title, formatClp(valPrincipal), valPrincipal);
     }
 
-    // Utilidad para fechas de demostración cercanas al día actual
     function getOffsetDateStr(daysOffset) {
       const d = new Date();
       d.setDate(d.getDate() + daysOffset);
@@ -830,7 +905,7 @@
       return `${y}-${m}-${day}`;
     }
 
-    // Reservas iniciales precargadas para demostración en vivo
+    // Almacén en memoria (para vista previa sin backend o sincronizado desde Supabase)
     let appointmentsStore = [
       {
         id: 'RES-101',
@@ -848,7 +923,8 @@
         goals: 'Recomposición corporal y mejorar energía en entrenamientos de fuerza.',
         supplements: 'Creatina monohidratada 5g, Vitamina D3.',
         status: 'Confirmada',
-        receiptImg: 'https://placehold.co/450x650/F3EFE4/065F46?text=Comprobante+Transferencia+%2435.000'
+        comprobantePath: null,
+        receiptImg: DEMO_RECEIPT_SVG
       },
       {
         id: 'RES-102',
@@ -866,7 +942,8 @@
         goals: 'Control mensual de porcentaje de grasa y ajuste de calorías.',
         supplements: 'Proteína Whey 1 scoop post-entreno.',
         status: 'Pendiente',
-        receiptImg: 'https://placehold.co/450x650/F3EFE4/065F46?text=Comprobante+Transferencia+%2420.000'
+        comprobantePath: null,
+        receiptImg: DEMO_RECEIPT_SVG
       }
     ];
 
@@ -928,7 +1005,8 @@
       if (blockedFullDates.includes(dateStr)) return true;
       const manualBlocked = blockedSpecificSlots[dateStr] || [];
       if (manualBlocked.includes(slot)) return true;
-      return appointmentsStore.some(a => a.date === dateStr && a.time === slot);
+      if (occupiedSupabaseKeys.has(`${dateStr}|${slot}`)) return true;
+      return appointmentsStore.some(a => a.date === dateStr && a.time === slot && a.status !== 'Cancelada');
     }
 
     function renderCalendar() {
@@ -940,15 +1018,14 @@
       grid.innerHTML = '';
 
       const firstDay = new Date(viewYear, viewMonth, 1);
-      const startOffset = (firstDay.getDay() + 6) % 7; // Lunes = 0
+      const startOffset = (firstDay.getDay() + 6) % 7;
       const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       for (let i = 0; i < startOffset; i++) {
-        const emptyCell = document.createElement('div');
-        grid.appendChild(emptyCell);
+        grid.appendChild(document.createElement('div'));
       }
 
       for (let day = 1; day <= daysInMonth; day++) {
@@ -1061,11 +1138,14 @@
         headerSubtitle.textContent = 'Panel Privado de Agenda y Fichas';
         headerBadge.textContent = '← Volver a Paciente';
 
-        if (verifiedAdminPassword) {
+        if (currentSessionUser) {
           document.getElementById('admin-login-gate').classList.add('hidden');
           document.getElementById('admin-dashboard-content').classList.remove('hidden');
           initAdminScheduleControls();
-          renderAdminAppointments();
+          loadAdminAppointmentsFromSupabase();
+        } else {
+          document.getElementById('admin-login-gate').classList.remove('hidden');
+          document.getElementById('admin-dashboard-content').classList.add('hidden');
         }
       } else {
         adminMain.classList.add('hidden');
@@ -1119,7 +1199,7 @@
     }
 
     // -----------------------------------------------------------------------
-    // PASO 3: PAGO POR TRANSFERENCIA BANCARIA + COMPROBANTE
+    // PASO 3: PAGO POR TRANSFERENCIA + GUARDADO EN SUPABASE
     // -----------------------------------------------------------------------
     function updateFinalSubmitButtonLabel() {
       const label = document.getElementById('btn-final-label');
@@ -1149,48 +1229,27 @@
       const file = event.target.files[0];
       if (!file) return;
 
+      uploadedReceiptFile = file;
       uploadedReceiptName = file.name;
       const reader = new FileReader();
       reader.onload = function (e) {
         uploadedReceiptDataUrl = e.target.result;
         document.getElementById('receipt-preview-img').src = uploadedReceiptDataUrl;
         document.getElementById('receipt-file-name').textContent = uploadedReceiptName;
-        document.getElementById('receipt-dropzone').classList.add('hidden');
         document.getElementById('receipt-preview-box').classList.remove('hidden');
+        document.getElementById('receipt-dropzone').classList.add('hidden');
         document.getElementById('client-submit-error').classList.add('hidden');
       };
       reader.readAsDataURL(file);
     }
 
     function clearReceiptFile() {
+      uploadedReceiptFile = null;
       uploadedReceiptDataUrl = null;
       uploadedReceiptName = '';
-      const input = document.getElementById('f-receipt');
-      if (input) input.value = '';
+      document.getElementById('f-receipt').value = '';
       document.getElementById('receipt-preview-box').classList.add('hidden');
       document.getElementById('receipt-dropzone').classList.remove('hidden');
-    }
-
-    function collectBookingPayload() {
-      return {
-        id: 'RES-' + Math.floor(100 + Math.random() * 900),
-        nutricionista_id: activeNutriProfile.id,
-        date: selectedDateStr,
-        time: selectedTimeSlot,
-        service: selectedService,
-        price: selectedPrice,
-        paymentMethod: 'Transferencia',
-        fullname: document.getElementById('f-fullname').value.trim(),
-        rut: document.getElementById('f-rut').value.trim(),
-        dob: document.getElementById('f-dob').value,
-        phone: document.getElementById('f-phone').value.trim(),
-        email: document.getElementById('f-email').value.trim(),
-        address: document.getElementById('f-address').value.trim(),
-        goals: document.getElementById('f-goals').value.trim(),
-        supplements: document.getElementById('f-supplements').value.trim() || 'Ninguno declarado',
-        status: 'Pendiente',
-        receiptImg: uploadedReceiptDataUrl
-      };
     }
 
     async function handleFinalBookingSubmit(e) {
@@ -1198,66 +1257,79 @@
       const errorBox = document.getElementById('client-submit-error');
       const submitBtn = document.getElementById('btn-final-agendar');
 
-      if (!uploadedReceiptDataUrl) {
+      if (!uploadedReceiptDataUrl || !uploadedReceiptFile) {
         errorBox.textContent = 'Por favor adjunta el pantallazo de tu transferencia antes de continuar.';
         errorBox.classList.remove('hidden');
         return;
       }
 
       errorBox.classList.add('hidden');
-      if (submitBtn) submitBtn.disabled = true;
+      submitBtn.disabled = true;
 
-      const payload = collectBookingPayload();
+      const fullname = document.getElementById('f-fullname').value.trim();
+      const rut = document.getElementById('f-rut').value.trim();
+      const dob = document.getElementById('f-dob').value;
+      const phone = document.getElementById('f-phone').value.trim();
+      const email = document.getElementById('f-email').value.trim();
+      const address = document.getElementById('f-address').value.trim();
+      const goals = document.getElementById('f-goals').value.trim();
+      const supplements = document.getElementById('f-supplements').value.trim();
 
-      // Guardar directamente en Supabase
-      if (db) {
+      // Si Supabase está configurado y hay un nutricionista cargado, persistir en BD y Storage
+      if (db && activeNutriProfile.id) {
         try {
-          const dbRow = {
-            nutricionista_id: payload.nutricionista_id,
-            fecha: payload.date,
-            hora: payload.time,
-            servicio: payload.service,
-            precio: payload.price,
-            paciente_nombre: payload.fullname,
-            rut: payload.rut,
-            fecha_nacimiento: payload.dob || null,
-            telefono: payload.phone,
-            correo: payload.email,
-            direccion: payload.address,
-            objetivos: payload.goals,
-            suplementos: payload.supplements,
-            estado: 'Pendiente',
-            comprobante_url: payload.receiptImg
-          };
+          const ext = (uploadedReceiptName.split('.').pop() || 'jpg').toLowerCase();
+          const uniqueId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
+          const storagePath = `${activeNutriProfile.id}/${uniqueId}.${ext}`;
 
-          const { data: inserted, error } = await db
-            .storage.from('comprobantes')
-            .insert([dbRow])
-            .select()
-            .single();
+          const { error: uploadErr } = await db.storage
+            .from('comprobantes')
+            .upload(storagePath, uploadedReceiptFile, { upsert: false });
 
-          if (error) {
-            console.error('Error guardando reserva en Supabase:', error);
-            errorBox.textContent = `No se pudo guardar en la base de datos: ${error.message}`;
-            errorBox.classList.remove('hidden');
-            if (submitBtn) submitBtn.disabled = false;
-            return;
+          if (uploadErr) {
+            throw new Error('No se pudo subir el comprobante: ' + uploadErr.message);
           }
 
-          if (inserted && inserted.id) {
-            payload.id = inserted.id;
+          const fechaHoraIso = buildIsoFromDateAndSlot(selectedDateStr, selectedTimeSlot);
+          const { error: insertErr } = await db.from('citas').insert({
+            nutricionista_id: activeNutriProfile.id,
+            paciente_nombre: fullname,
+            paciente_email: email,
+            paciente_telefono: phone,
+            fecha_hora: fechaHoraIso,
+            estado: 'pendiente',
+            comprobante_path: storagePath
+          });
+
+          if (insertErr) {
+            if (insertErr.code === '23505') {
+              throw new Error('Este horario se acaba de ocupar por otro paciente. Vuelve al Paso 1 y elige otro bloque.');
+            }
+            throw new Error(insertErr.message);
           }
+
+          occupiedSupabaseKeys.add(`${selectedDateStr}|${selectedTimeSlot}`);
         } catch (err) {
-          console.error('Fallo de red con Supabase:', err);
-          errorBox.textContent = 'Error de conexión al guardar la cita. Intenta nuevamente.';
+          errorBox.textContent = err.message || 'Ocurrió un problema al guardar tu cita.';
           errorBox.classList.remove('hidden');
-          if (submitBtn) submitBtn.disabled = false;
+          submitBtn.disabled = false;
           return;
         }
       }
 
-      if (submitBtn) submitBtn.disabled = false;
-      finalizeBookingAndShowSuccess(payload);
+      submitBtn.disabled = false;
+      const bookingObj = {
+        id: 'RES-' + Math.floor(103 + Math.random() * 890),
+        date: selectedDateStr,
+        time: selectedTimeSlot,
+        service: selectedService,
+        price: selectedPrice,
+        paymentMethod: 'Transferencia',
+        fullname, rut, dob, phone, email, address, goals, supplements,
+        status: 'Pendiente',
+        receiptImg: uploadedReceiptDataUrl
+      };
+      finalizeBookingAndShowSuccess(bookingObj);
     }
 
     function finalizeBookingAndShowSuccess(bookingObj) {
@@ -1293,22 +1365,188 @@
     }
 
     // -----------------------------------------------------------------------
-    // VISTA NUTRICIONISTA (#admin)
+    // VISTA NUTRICIONISTA (#admin) — SUPABASE AUTH + CAMBIO DE CLAVE + CITAS
     // -----------------------------------------------------------------------
-    function handleAdminLogin(e) {
+    async function handleAdminLogin(e) {
       e.preventDefault();
-      const input = document.getElementById('admin-password-input').value.trim();
+      const email = document.getElementById('admin-email-input').value.trim();
+      const password = document.getElementById('admin-password-input').value;
       const errorEl = document.getElementById('admin-login-error');
+      const resetEl = document.getElementById('admin-reset-feedback');
+      const btn = document.getElementById('btn-admin-login');
 
-      if (input === 'nutri2026') {
-        verifiedAdminPassword = input;
-        errorEl.classList.add('hidden');
+      errorEl.classList.add('hidden');
+      resetEl.classList.add('hidden');
+
+      if (!db) {
+        // Modo vista previa local si aún no pegas tus credenciales de Supabase
+        currentSessionUser = { email };
         document.getElementById('admin-login-gate').classList.add('hidden');
         document.getElementById('admin-dashboard-content').classList.remove('hidden');
         initAdminScheduleControls();
         renderAdminAppointments();
-      } else {
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Verificando...';
+
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+      btn.disabled = false;
+      btn.textContent = 'Entrar al Panel →';
+
+      if (error) {
+        errorEl.textContent = 'Correo o contraseña incorrectos.';
         errorEl.classList.remove('hidden');
+        return;
+      }
+
+      currentSessionUser = data.user;
+      document.getElementById('admin-login-gate').classList.add('hidden');
+      document.getElementById('admin-dashboard-content').classList.remove('hidden');
+      initAdminScheduleControls();
+      await loadAdminAppointmentsFromSupabase();
+    }
+
+    async function handleForgotPassword() {
+      const email = document.getElementById('admin-email-input').value.trim();
+      const errorEl = document.getElementById('admin-login-error');
+      const resetEl = document.getElementById('admin-reset-feedback');
+
+      errorEl.classList.add('hidden');
+      resetEl.classList.add('hidden');
+
+      if (!email) {
+        errorEl.textContent = 'Escribe primero tu correo arriba para enviarte el enlace de recuperación.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      if (!db) {
+        resetEl.textContent = 'Conecta tu SUPABASE_URL y ANON_KEY para enviar correos de recuperación reales.';
+        resetEl.classList.remove('hidden');
+        return;
+      }
+
+      const { error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname + '#admin'
+      });
+
+      if (error) {
+        errorEl.textContent = error.message;
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      resetEl.textContent = 'Listo. Revisa tu correo para restablecer tu contraseña.';
+      resetEl.classList.remove('hidden');
+    }
+
+    async function handleAdminLogout() {
+      if (db) {
+        await db.auth.signOut();
+      }
+      currentSessionUser = null;
+      adminNutriId = null;
+      document.getElementById('admin-dashboard-content').classList.add('hidden');
+      document.getElementById('admin-login-gate').classList.remove('hidden');
+    }
+
+    function openChangePasswordModal() {
+      const fb = document.getElementById('change-password-feedback');
+      fb.classList.add('hidden');
+      document.getElementById('new-password-input').value = '';
+      document.getElementById('change-password-modal').classList.remove('hidden');
+    }
+
+    function closeChangePasswordModal() {
+      document.getElementById('change-password-modal').classList.add('hidden');
+    }
+
+    async function handleChangePasswordSubmit(e) {
+      e.preventDefault();
+      const newPassword = document.getElementById('new-password-input').value;
+      const fb = document.getElementById('change-password-feedback');
+      fb.classList.remove('hidden');
+
+      if (!db) {
+        fb.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-700/15 text-amber-900 border border-amber-700/30';
+        fb.textContent = 'Conecta tu proyecto de Supabase para guardar la nueva contraseña.';
+        return;
+      }
+
+      const { error } = await db.auth.updateUser({ password: newPassword });
+      if (error) {
+        fb.className = 'text-xs font-bold p-2.5 rounded-xl bg-red-800/15 text-red-900 border border-red-900/30';
+        fb.textContent = error.message;
+        return;
+      }
+
+      fb.className = 'text-xs font-bold p-2.5 rounded-xl bg-emerald-800/15 text-[#065F46] border border-[#065F46]/30';
+      fb.textContent = '✓ Contraseña actualizada correctamente.';
+      setTimeout(closeChangePasswordModal, 1400);
+    }
+
+    async function loadAdminAppointmentsFromSupabase() {
+      if (!db || !currentSessionUser) {
+        renderAdminAppointments();
+        return;
+      }
+
+      try {
+        const { data: nutriData } = await db
+          .from('nutricionistas')
+          .select('id, nombre')
+          .eq('user_id', currentSessionUser.id)
+          .single();
+
+        if (nutriData) {
+          adminNutriId = nutriData.id;
+          document.getElementById('admin-pro-heading').textContent = `Agenda de ${nutriData.nombre}`;
+        }
+
+        const { data: citasData, error } = await db
+          .from('citas')
+          .select('*')
+          .order('fecha_hora', { ascending: true });
+
+        if (error) {
+          console.warn('Error cargando citas:', error.message);
+          renderAdminAppointments();
+          return;
+        }
+
+        appointmentsStore = (citasData || []).map(c => {
+          const dt = new Date(c.fecha_hora);
+          const dateStr = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+          const timeStr = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')} hrs`;
+          const statusCap = c.estado === 'confirmada' ? 'Confirmada' : (c.estado === 'cancelada' ? 'Cancelada' : 'Pendiente');
+          return {
+            id: c.id,
+            date: dateStr,
+            time: timeStr,
+            service: 'Consulta Nutricional',
+            price: formatClp(activeNutriProfile.valor_consulta),
+            paymentMethod: 'Transferencia',
+            fullname: c.paciente_nombre,
+            rut: '--',
+            dob: '--',
+            phone: c.paciente_telefono,
+            email: c.paciente_email,
+            address: '--',
+            goals: '--',
+            supplements: '--',
+            status: statusCap,
+            comprobantePath: c.comprobante_path,
+            receiptImg: null
+          };
+        }).filter(c => c.status !== 'Cancelada');
+
+        renderAdminAppointments();
+      } catch (err) {
+        console.error('Error sincronizando citas:', err);
+        renderAdminAppointments();
       }
     }
 
@@ -1496,6 +1734,7 @@
 
       appointmentsStore.forEach(app => {
         const isConfirmed = app.status === 'Confirmada';
+        const hasReceipt = Boolean(app.receiptImg || app.comprobantePath);
         const card = document.createElement('div');
         card.className = 'bg-[#F3EFE4] border border-[#B5AE9E] rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3';
 
@@ -1521,7 +1760,7 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
-              ${app.receiptImg ? `
+              ${hasReceipt ? `
                 <button
                   type="button"
                   onclick="openReceiptModal('${app.id}')"
@@ -1566,21 +1805,33 @@
     }
 
     async function confirmAppointmentAdmin(id) {
-      const app = appointmentsStore.find(a => String(a.id) === String(id));
+      if (db && currentSessionUser) {
+        await db.from('citas').update({ estado: 'confirmada' }).eq('id', id);
+      }
+      const app = appointmentsStore.find(a => a.id === id);
       if (app) {
         app.status = 'Confirmada';
         renderAdminAppointments();
-        if (db) {
-          await db.storage.from('comprobantes').update({ estado: 'Confirmada' }).eq('id', id);
-        }
       }
     }
 
-    function openReceiptModal(id) {
-      const app = appointmentsStore.find(a => String(a.id) === String(id));
-      if (!app || !app.receiptImg) return;
+    async function openReceiptModal(id) {
+      const app = appointmentsStore.find(a => a.id === id);
+      if (!app) return;
+
+      let imgUrl = app.receiptImg;
+      if (!imgUrl && app.comprobantePath && db) {
+        const { data, error } = await db.storage
+          .from('comprobantes')
+          .createSignedUrl(app.comprobantePath, 300);
+        if (!error && data && data.signedUrl) {
+          imgUrl = data.signedUrl;
+        }
+      }
+
+      if (!imgUrl) return;
       document.getElementById('modal-receipt-patient').textContent = `${app.fullname} • ${app.price}`;
-      document.getElementById('modal-receipt-image').src = app.receiptImg;
+      document.getElementById('modal-receipt-image').src = imgUrl;
       document.getElementById('receipt-viewer-modal').classList.remove('hidden');
     }
 
@@ -1599,15 +1850,13 @@
     }
 
     document.getElementById('btn-confirm-delete').onclick = async function () {
-      if (pendingDeleteId) {
-        const targetId = pendingDeleteId;
-        appointmentsStore = appointmentsStore.filter(a => String(a.id) !== String(targetId));
-        renderAdminAppointments();
-        closeDeleteModal();
-        if (db) {
-          await db.storage.from('comprobantes').delete().eq('id', targetId);
-        }
+      if (!pendingDeleteId) return;
+      if (db && currentSessionUser) {
+        await db.from('citas').update({ estado: 'cancelada' }).eq('id', pendingDeleteId);
       }
+      appointmentsStore = appointmentsStore.filter(a => a.id !== pendingDeleteId);
+      renderAdminAppointments();
+      closeDeleteModal();
     };
 
     function exportAdminCsvBackup() {
@@ -1631,6 +1880,20 @@
 
     // Inicialización al cargar
     window.addEventListener('DOMContentLoaded', async () => {
+      if (db) {
+        const { data: { session } } = await db.auth.getSession();
+        if (session && session.user) {
+          currentSessionUser = session.user;
+        }
+        db.auth.onAuthStateChange((event, sessionState) => {
+          currentSessionUser = sessionState ? sessionState.user : null;
+          if (event === 'PASSWORD_RECOVERY') {
+            navigateView('admin');
+            openChangePasswordModal();
+          }
+        });
+      }
+
       await loadNutricionistaFromSupabase();
       const hasAdminHash = window.location.hash.toLowerCase().includes('admin');
       navigateView(hasAdminHash ? 'admin' : 'client');
