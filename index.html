@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserva de Consulta • Nombre</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #D6D1C4;
+      color: #1C1917;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-[#D6D1C4] text-stone-900 min-h-screen flex flex-col antialiased selection:bg-[#065F46] selection:text-[#E6E2D6]">
+
+  <!-- ===================================================================== -->
+  <!-- CABECERA PRINCIPAL                                                    -->
+  <!-- ===================================================================== -->
+  <header class="w-full bg-[#E6E2D6] border-b border-[#B5AE9E] px-4 sm:px-8 py-3.5">
+    <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+      <a href="#" onclick="navigateView('client')" class="flex items-center gap-3 focus:outline-none">
+        <!-- Ícono genérico reemplazable -->
+        <div class="w-9 h-9 rounded-xl bg-[#065F46] text-[#E6E2D6] flex items-center justify-center shadow-sm flex-shrink-0">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <path d="M16 2v4M8 2v4M3 10h18" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-display text-base sm:text-lg font-extrabold text-stone-900 leading-tight">
+            Nombre
+          </h1>
+          <p id="header-subtitle" class="text-[11px] sm:text-xs text-stone-600">
+            Agendamiento directo en línea
+          </p>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-2">
+        <span id="header-badge" class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#D6D1C4] text-[#065F46] border border-[#B5AE9E]">
+          Sin Registro
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- 1. VISTA PACIENTE: FLUJO EN 3 PANTALLAS INDEPENDIENTES                -->
+  <!-- ===================================================================== -->
+  <main id="view-client" class="flex-1 w-full max-w-xl mx-auto px-4 py-5 sm:py-8 space-y-5">
+
+    <!-- Indicador Visual de Progreso (3 Pasos) -->
+    <nav aria-label="Progreso de reserva" class="grid grid-cols-3 gap-2">
+      <div id="step-pill-1" class="bg-[#065F46] text-[#E6E2D6] rounded-xl px-3 py-2 text-center border border-[#065F46] transition-all">
+        <span class="block text-[10px] uppercase tracking-wider opacity-80 font-semibold">Paso 1</span>
+        <span class="font-display text-xs font-bold">Horario</span>
+      </div>
+      <div id="step-pill-2" class="bg-[#E6E2D6] text-stone-600 rounded-xl px-3 py-2 text-center border border-[#B5AE9E] transition-all">
+        <span class="block text-[10px] uppercase tracking-wider opacity-80 font-semibold">Paso 2</span>
+        <span class="font-display text-xs font-bold">Tus Datos</span>
+      </div>
+      <div id="step-pill-3" class="bg-[#E6E2D6] text-stone-600 rounded-xl px-3 py-2 text-center border border-[#B5AE9E] transition-all">
+        <span class="block text-[10px] uppercase tracking-wider opacity-80 font-semibold">Paso 3</span>
+        <span class="font-display text-xs font-bold">Pago</span>
+      </div>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- PANTALLA 1: TIPO DE ATENCIÓN + CALENDARIO Y HORA                    -->
+    <!-- =================================================================== -->
+    <div id="client-step-1" class="space-y-4">
+      <section class="bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-4 sm:p-5 shadow-sm">
+        <label class="block text-xs font-bold uppercase tracking-wider text-[#065F46] mb-2.5">
+          Elige el Tipo de Atención
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <button
+            type="button"
+            onclick="selectService('Primera Evaluación (60 min)', '$35.000')"
+            id="srv-btn-1"
+            class="p-3.5 rounded-xl border-2 border-[#065F46] bg-[#D6D1C4] text-left transition"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-display font-bold text-sm text-stone-900">Primera Evaluación</span>
+              <span class="text-xs font-extrabold text-[#065F46]">$35.000</span>
+            </div>
+            <span class="block text-xs text-stone-700 mt-0.5">Antropometría + pauta • 60 min</span>
+          </button>
+          <button
+            type="button"
+            onclick="selectService('Control / Pesaje (30 min)', '$20.000')"
+            id="srv-btn-2"
+            class="p-3.5 rounded-xl border border-[#B5AE9E] bg-[#F3EFE4] hover:bg-[#DDD8CA] text-left transition"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-display font-bold text-sm text-stone-900">Control / Pesaje</span>
+              <span class="text-xs font-extrabold text-stone-700">$20.000</span>
+            </div>
+            <span class="block text-xs text-stone-600 mt-0.5">Ajuste de plan o corte • 30 min</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <span class="block text-xs font-bold uppercase tracking-wider text-[#065F46]">
+              Selecciona Día y Bloque
+            </span>
+            <h2 class="font-display text-base sm:text-lg font-bold text-stone-900 mt-0.5">
+              ¿Cuándo quieres agendar?
+            </h2>
+          </div>
+          <span id="calendar-sync-badge" class="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-[#D6D1C4] text-stone-700 border border-[#B5AE9E]">
+            Sincronizando...
+          </span>
+        </div>
+
+        <!-- Navegación de Mes -->
+        <div class="flex items-center justify-between bg-[#D6D1C4]/70 px-3 py-2 rounded-xl border border-[#B5AE9E]">
+          <button
+            type="button"
+            onclick="changeMonth(-1)"
+            aria-label="Mes anterior"
+            class="w-8 h-8 rounded-lg bg-[#F3EFE4] hover:bg-[#DDD8CA] border border-[#B5AE9E] font-bold text-stone-800 flex items-center justify-center"
+          >
+            ‹
+          </button>
+          <span id="calendar-month-label" class="font-display font-bold text-sm text-stone-900 capitalize">
+            Noviembre 2026
+          </span>
+          <button
+            type="button"
+            onclick="changeMonth(1)"
+            aria-label="Mes siguiente"
+            class="w-8 h-8 rounded-lg bg-[#F3EFE4] hover:bg-[#DDD8CA] border border-[#B5AE9E] font-bold text-stone-800 flex items-center justify-center"
+          >
+            ›
+          </button>
+        </div>
+
+        <!-- Grilla de días -->
+        <div>
+          <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-stone-600 mb-1.5">
+            <span>Lun</span>
+            <span>Mar</span>
+            <span>Mié</span>
+            <span>Jue</span>
+            <span>Vie</span>
+            <span>Sáb</span>
+            <span>Dom</span>
+          </div>
+          <div id="calendar-days-grid" class="grid grid-cols-7 gap-1.5"></div>
+        </div>
+
+        <!-- Bloques horarios -->
+        <div id="time-slots-wrapper" class="hidden pt-3.5 border-t border-[#B5AE9E]/80">
+          <div class="flex items-center justify-between mb-2.5">
+            <p class="text-xs font-bold text-stone-800">
+              Horas para el <span id="selected-day-title" class="text-[#065F46]">--</span>:
+            </p>
+            <span class="text-[11px] text-stone-600">Toca para continuar →</span>
+          </div>
+          <div id="calendar-slots-grid" class="grid grid-cols-3 gap-2"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- PANTALLA 2: FICHA PRE-CONSULTA + BOTÓN "SIGUIENTE"                  -->
+    <!-- =================================================================== -->
+    <div id="client-step-2" class="hidden space-y-4">
+      <div class="bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-3.5 flex items-center justify-between gap-2 shadow-sm">
+        <div class="min-w-0">
+          <p id="step2-summary-dt" class="font-display font-bold text-xs sm:text-sm text-stone-900 truncate">--</p>
+          <p id="step2-summary-srv" class="text-[11px] text-stone-600 truncate">--</p>
+        </div>
+        <button
+          type="button"
+          onclick="goToClientStep(1)"
+          class="px-3 py-1.5 rounded-xl bg-[#D6D1C4] hover:bg-[#C8C2B3] text-[#065F46] border border-[#B5AE9E] text-xs font-bold transition flex-shrink-0"
+        >
+          ← Cambiar
+        </button>
+      </div>
+
+      <section class="bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-5 sm:p-6 shadow-sm">
+        <div class="pb-3.5 border-b border-[#B5AE9E]/80 mb-4">
+          <span class="block text-xs font-bold uppercase tracking-wider text-[#065F46]">
+            Ficha Pre-Consulta
+          </span>
+          <h2 class="font-display text-lg font-bold text-stone-900 mt-0.5">
+            Completa tus datos personales
+          </h2>
+        </div>
+
+        <form id="patient-data-form" onsubmit="handleStep2Next(event)" class="space-y-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="f-fullname" class="block text-xs font-bold text-stone-800 mb-1">Nombre y Apellido *</label>
+              <input id="f-fullname" type="text" required placeholder="Ej. Matías Soto González" class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 placeholder-stone-500 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20" />
+            </div>
+            <div>
+              <label for="f-rut" class="block text-xs font-bold text-stone-800 mb-1">RUT *</label>
+              <input id="f-rut" type="text" required oninput="formatRutInput(this)" placeholder="Ej. 19.456.789-K" class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 placeholder-stone-500 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="f-dob" class="block text-xs font-bold text-stone-800 mb-1">Fecha de Nacimiento *</label>
+              <input id="f-dob" type="date" required class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20" />
+            </div>
+            <div>
+              <label for="f-phone" class="block text-xs font-bold text-stone-800 mb-1">Teléfono (WhatsApp) *</label>
+              <input id="f-phone" type="tel" required placeholder="+56 9 1234 5678" class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 placeholder-stone-500 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="f-email" class="block text-xs font-bold text-stone-800 mb-1">Correo Electrónico *</label>
+              <input id="f-email" type="email" required placeholder="paciente@correo.cl" class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 placeholder-stone-500 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20" />
+            </div>
+            <div>
+              <label for="f-address" class="block text-xs font-bold text-stone-800 mb-1">Dirección (Comuna / Calle) *</label>
+              <input id="f-address" type="text" required placeholder="Ej. Av. Los Carrera 450, Quilpué" class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 placeholder-stone-500 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20" />
+            </div>
+          </div>
+
+          <div>
+            <label for="f-goals" class="block text-xs font-bold text-stone-800 mb-1">Objetivos Principales *</label>
+            <textarea id="f-goals" rows="2" required placeholder="Ej. Bajar 3 kg para categoría -76 kg en torneo de diciembre..." class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 placeholder-stone-500 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20"></textarea>
+          </div>
+
+          <div>
+            <label for="f-supplements" class="block text-xs font-bold text-stone-800 mb-1">
+              Suplementos que consumes actualmente <span class="font-normal text-stone-600">(Escribe "Ninguno" si no tomas)</span> *
+            </label>
+            <textarea id="f-supplements" rows="2" required placeholder="Ej. Creatina 5g diarios, proteína whey post-entreno..." class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 placeholder-stone-500 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20"></textarea>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" class="w-full py-3.5 px-6 bg-[#065F46] hover:bg-[#047857] text-[#E6E2D6] font-display font-bold rounded-xl text-sm sm:text-base shadow-sm transition active:scale-[0.99] flex items-center justify-center gap-2">
+              <span>Siguiente</span>
+              <span>→</span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- PANTALLA 3: TRANSFERENCIA + COMPROBANTE + BOTÓN FINAL "AGENDAR"     -->
+    <!-- =================================================================== -->
+    <div id="client-step-3" class="hidden space-y-4">
+      <div id="step3-back-bar" class="bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-3.5 flex items-center justify-between gap-2 shadow-sm">
+        <div class="min-w-0">
+          <p id="step3-summary-patient" class="font-display font-bold text-xs sm:text-sm text-stone-900 truncate">--</p>
+          <p id="step3-summary-dt" class="text-[11px] text-stone-600 truncate">--</p>
+        </div>
+        <button
+          type="button"
+          onclick="goToClientStep(2)"
+          class="px-3 py-1.5 rounded-xl bg-[#D6D1C4] hover:bg-[#C8C2B3] text-[#065F46] border border-[#B5AE9E] text-xs font-bold transition flex-shrink-0"
+        >
+          ← Volver a datos
+        </button>
+      </div>
+
+      <section class="bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-5 sm:p-6 shadow-sm">
+        <form id="patient-payment-form" onsubmit="handleFinalBookingSubmit(event)" class="space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-[#B5AE9E]/80">
+            <div>
+              <span class="block text-xs font-bold uppercase tracking-wider text-[#065F46]">
+                Último Paso • Confirmación de Pago
+              </span>
+              <h2 class="font-display text-lg font-bold text-stone-900 mt-0.5">
+                Transferencia y Comprobante
+              </h2>
+            </div>
+            <span id="payment-amount-badge" class="px-3.5 py-1.5 rounded-xl bg-[#065F46] text-[#E6E2D6] font-display font-extrabold text-sm">
+              Total: $35.000
+            </span>
+          </div>
+
+          <p class="text-xs text-stone-700 leading-relaxed">
+            Realiza la transferencia por el valor de tu consulta y adjunta el pantallazo para dejar reservada tu hora.
+          </p>
+
+          <!-- Datos Bancarios + Botón Copiar -->
+          <div class="bg-[#F3EFE4] border border-[#B5AE9E] rounded-2xl p-4 space-y-2.5 text-xs">
+            <div class="flex items-center justify-between pb-2 border-b border-[#B5AE9E]/60">
+              <span class="font-display font-bold text-stone-900 text-sm">Datos para Transferencia</span>
+              <button
+                type="button"
+                id="btn-copy-bank"
+                onclick="copyBankDetails()"
+                class="px-3 py-1.5 rounded-lg bg-[#D6D1C4] hover:bg-[#C8C2B3] text-[#065F46] border border-[#B5AE9E] font-bold text-[11px] transition flex items-center gap-1.5 active:scale-95"
+              >
+                <span>📋</span>
+                <span id="copy-bank-label">Copiar datos</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-stone-800">
+              <p><strong class="text-stone-900">Nombre:</strong> Nombre</p>
+              <p><strong class="text-stone-900">RUT:</strong> 12.345.678-9</p>
+              <p><strong class="text-stone-900">Banco:</strong> Banco Estado</p>
+              <p><strong class="text-stone-900">Tipo Cuenta:</strong> Cuenta Vista / RUT</p>
+              <p><strong class="text-stone-900">N° Cuenta:</strong> 12345678</p>
+              <p><strong class="text-stone-900">Correo:</strong> pagos@nombre.cl</p>
+            </div>
+          </div>
+
+          <!-- Subida del Comprobante -->
+          <div>
+            <label for="f-receipt" class="block text-xs font-bold text-stone-800 mb-1.5">
+              Adjuntar Comprobante de Pago (JPG o PNG) *
+            </label>
+
+            <label
+              id="receipt-dropzone"
+              for="f-receipt"
+              class="w-full p-5 rounded-2xl border-2 border-dashed border-[#065F46]/50 bg-[#F3EFE4] hover:bg-[#DDD8CA] cursor-pointer transition flex flex-col items-center justify-center text-center gap-1.5"
+            >
+              <span class="w-10 h-10 rounded-xl bg-[#D6D1C4] text-[#065F46] border border-[#B5AE9E] flex items-center justify-center text-lg">
+                📎
+              </span>
+              <span class="text-xs font-bold text-stone-900">
+                Toca aquí para subir el pantallazo de transferencia
+              </span>
+              <span class="text-[11px] text-stone-600">
+                Formatos aceptados: JPG, PNG o WebP
+              </span>
+              <input
+                id="f-receipt"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                required
+                onchange="handleReceiptUpload(event)"
+                class="sr-only"
+              />
+            </label>
+
+            <div id="receipt-preview-box" class="hidden mt-2.5 p-3 rounded-xl bg-[#F3EFE4] border border-[#065F46] flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 overflow-hidden">
+                <img id="receipt-preview-img" src="" alt="Vista previa comprobante" class="w-14 h-14 rounded-lg object-cover border border-[#B5AE9E] flex-shrink-0" />
+                <div class="overflow-hidden">
+                  <p id="receipt-file-name" class="text-xs font-bold text-stone-900 truncate">comprobante.jpg</p>
+                  <p class="text-[11px] text-[#065F46] font-semibold">✓ Comprobante listo para enviar</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onclick="clearReceiptFile()"
+                class="px-2.5 py-1.5 rounded-lg bg-[#D6D1C4] hover:bg-red-800/20 text-stone-800 hover:text-red-900 border border-[#B5AE9E] text-xs font-semibold transition flex-shrink-0"
+              >
+                Cambiar
+              </button>
+            </div>
+          </div>
+
+          <p id="client-submit-error" class="hidden text-xs font-bold text-red-900 bg-red-800/15 border border-red-900/30 p-3 rounded-xl"></p>
+
+          <div class="pt-2">
+            <button
+              id="btn-final-agendar"
+              type="submit"
+              class="w-full py-4 px-6 bg-[#065F46] hover:bg-[#047857] text-[#E6E2D6] font-display font-bold rounded-xl text-sm sm:text-base shadow-sm transition active:scale-[0.99] disabled:opacity-50"
+            >
+              Agendar
+            </button>
+          </div>
+        </form>
+
+        <!-- Pantalla de Éxito Final -->
+        <div id="booking-success-screen" class="hidden text-center py-5 space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-[#065F46] text-[#E6E2D6] flex items-center justify-center mx-auto text-xl font-bold shadow-sm">
+            ✓
+          </div>
+          <h3 class="font-display text-lg font-extrabold text-stone-900">
+            ¡Solicitud enviada con éxito!
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-700 leading-relaxed max-w-md mx-auto">
+            Tus datos y comprobante fueron enviados al nutricionista. Recibirás un <strong>correo electrónico de confirmación</strong> apenas valide tu transferencia.
+          </p>
+          <div class="pt-2">
+            <button
+              type="button"
+              onclick="resetClientFlow()"
+              class="px-5 py-2.5 rounded-xl bg-[#D6D1C4] text-stone-900 border border-[#B5AE9E] text-xs font-semibold hover:bg-[#C8C2B3] transition"
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- 2. VISTA NUTRICIONISTA (#admin / ?admin) CON ACCESO POR CLAVE         -->
+  <!-- ===================================================================== -->
+  <main id="view-admin" class="hidden flex-1 w-full max-w-5xl mx-auto px-4 py-6 sm:py-10 space-y-6">
+
+    <!-- TARJETA DE ACCESO CON CLAVE (DESDE CONFIG!B2 EN GOOGLE SHEETS) -->
+    <section id="admin-login-gate" class="max-w-md mx-auto bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-6 sm:p-8 shadow-sm space-y-4">
+      <div class="text-center space-y-1.5">
+        <div class="w-12 h-12 rounded-2xl bg-[#065F46] text-[#E6E2D6] flex items-center justify-center mx-auto text-xl shadow-sm">
+          🔒
+        </div>
+        <h2 class="font-display text-xl font-extrabold text-stone-900">
+          Acceso Nutricionista
+        </h2>
+        <p class="text-xs text-stone-600">
+          Ingresa la clave configurada en tu hoja <strong>Config</strong> para revisar fichas y confirmar citas.
+        </p>
+      </div>
+
+      <form onsubmit="handleAdminLogin(event)" class="space-y-3.5">
+        <div>
+          <label for="admin-password-input" class="block text-xs font-bold text-stone-800 mb-1">
+            Clave de Acceso
+          </label>
+          <input
+            id="admin-password-input"
+            type="password"
+            required
+            placeholder="••••••••"
+            class="w-full px-3.5 py-2.5 bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl text-sm text-stone-900 outline-none focus:border-[#065F46] focus:ring-2 focus:ring-[#065F46]/20"
+          />
+        </div>
+
+        <p id="admin-login-error" class="hidden text-xs font-bold text-red-900 bg-red-800/15 border border-red-900/30 p-2.5 rounded-xl text-center">
+          Clave incorrecta. Intenta nuevamente.
+        </p>
+
+        <button
+          id="btn-admin-login"
+          type="submit"
+          class="w-full py-3 bg-[#065F46] hover:bg-[#047857] text-[#E6E2D6] font-display font-bold rounded-xl text-sm transition shadow-sm"
+        >
+          Ingresar al Panel
+        </button>
+      </form>
+    </section>
+
+    <!-- PANEL PRIVADO DESBLOQUEADO -->
+    <section id="admin-dashboard-content" class="hidden bg-[#E6E2D6] border border-[#B5AE9E] rounded-2xl p-5 sm:p-6 shadow-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#B5AE9E]/80">
+        <div>
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-[#065F46] bg-[#D6D1C4] px-2.5 py-1 rounded-md border border-[#B5AE9E]">
+            Panel Privado del Profesional
+          </span>
+          <h2 class="font-display text-xl sm:text-2xl font-extrabold text-stone-900 mt-2">
+            Agenda y Fichas Pre-Consulta
+          </h2>
+          <p class="text-xs text-stone-600 mt-0.5">
+            Revisa el comprobante de transferencia y confirma por correo electrónico en 1 clic.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <div class="bg-[#F3EFE4] border border-[#B5AE9E] px-3.5 py-2 rounded-xl text-center">
+            <span class="block text-[10px] font-bold uppercase text-stone-500">Agendados</span>
+            <span id="admin-kpi-total" class="font-display text-base font-extrabold text-stone-900">0</span>
+          </div>
+          <div class="bg-[#F3EFE4] border border-[#B5AE9E] px-3.5 py-2 rounded-xl text-center">
+            <span class="block text-[10px] font-bold uppercase text-stone-500">Pendientes</span>
+            <span id="admin-kpi-pending" class="font-display text-base font-extrabold text-[#065F46]">0</span>
+          </div>
+          <button
+            type="button"
+            onclick="fetchAdminAppointments()"
+            title="Actualizar lista"
+            class="p-2.5 rounded-xl bg-[#D6D1C4] hover:bg-[#C8C2B3] text-stone-900 border border-[#B5AE9E] text-sm transition"
+          >
+            🔄
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div id="admin-appointments-list" class="space-y-3"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- POPUP MODAL PARA VER FOTO DEL COMPROBANTE DE PAGO                     -->
+  <!-- ===================================================================== -->
+  <div id="receipt-viewer-modal" class="fixed inset-0 bg-stone-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#E6E2D6] rounded-2xl max-w-lg w-full p-5 shadow-2xl border border-[#B5AE9E] space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[#B5AE9E]">
+        <div>
+          <h3 class="font-display font-bold text-stone-900 text-base">Comprobante de Transferencia</h3>
+          <p id="modal-receipt-patient" class="text-xs text-stone-600">--</p>
+        </div>
+        <button
+          type="button"
+          onclick="closeReceiptModal()"
+          class="w-8 h-8 rounded-lg bg-[#D6D1C4] hover:bg-[#C8C2B3] text-stone-900 font-bold text-lg flex items-center justify-center"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div class="bg-[#F3EFE4] border border-[#B5AE9E] rounded-xl p-2 flex items-center justify-center min-h-[260px] max-h-[65vh] overflow-auto">
+        <img
+          id="modal-receipt-image"
+          src=""
+          alt="Comprobante de pago del paciente"
+          class="max-w-full max-h-[60vh] rounded-lg object-contain"
+        />
+      </div>
+
+      <div class="flex items-center justify-between gap-2 pt-1">
+        <a
+          id="modal-receipt-drive-link"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-3.5 py-2 rounded-xl bg-[#D6D1C4] hover:bg-[#C8C2B3] text-stone-900 border border-[#B5AE9E] text-xs font-semibold transition"
+        >
+          Abrir en Google Drive ↗
+        </a>
+        <button
+          type="button"
+          onclick="closeReceiptModal()"
+          class="px-5 py-2 rounded-xl bg-[#065F46] hover:bg-[#047857] text-[#E6E2D6] text-xs font-semibold transition"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- PIE DE PÁGINA                                                         -->
+  <!-- ===================================================================== -->
+  <footer class="py-5 px-4 text-center text-xs text-stone-700 border-t border-[#B5AE9E] bg-[#C8C2B3]/60">
+    Nombre • Sistema de Agendamiento Directo
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- CONFIGURACIÓN Y LÓGICA JAVASCRIPT (CONEXIÓN A GOOGLE APPS SCRIPT)     -->
+  <!-- ===================================================================== -->
+  <script>
+    // =====================================================================
+    // >>> PEGA AQUÍ LA URL (/exec) DE TU GOOGLE APPS SCRIPT <<<
+    // =====================================================================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzc7Wi88T95gvcd3HHiGKG9_cZ2yluUdYWnPsb8Y9pRHk8vPwnhPsqD1FlTR6qzCBBX/exec';
+
+    let currentView = 'client';
+    let selectedService = 'Primera Evaluación (60 min)';
+    let selectedPrice = '$35.000';
+    let viewYear = new Date().getFullYear();
+    let viewMonth = new Date().getMonth();
+    let selectedDateStr = null;
+    let selectedTimeSlot = null;
+    let uploadedReceiptBase64 = null;
+    let uploadedReceiptName = '';
+
+    // Horas ocupadas obtenidas desde Google Sheets (solo fecha + hora)
+    let occupiedSlots = [];
+
+    // Clave verificada en memoria de sesión para acciones admin
+    let verifiedAdminPassword = null;
+    let adminAppointments = [];
+
+    const DAILY_SLOTS = ['09:30 hrs', '11:00 hrs', '12:30 hrs', '15:30 hrs', '17:00 hrs', '18:30 hrs'];
+
+    // -----------------------------------------------------------------------
+    // NAVEGACIÓN ENTRE VISTA PACIENTE Y VISTA NUTRICIONISTA (#admin)
+    // -----------------------------------------------------------------------
+    function detectInitialRoute() {
+      const hasAdminHash = window.location.hash.toLowerCase().includes('admin');
+      const hasAdminParam = new URLSearchParams(window.location.search).has('admin');
+      setView(hasAdminHash || hasAdminParam ? 'admin' : 'client', false);
+    }
+
+    function navigateView(target) {
+      setView(target, true);
+    }
+
+    function setView(target, updateUrl) {
+      currentView = target;
+      const clientMain = document.getElementById('view-client');
+      const adminMain = document.getElementById('view-admin');
+      const headerSubtitle = document.getElementById('header-subtitle');
+      const headerBadge = document.getElementById('header-badge');
+
+      if (target === 'admin') {
+        clientMain.classList.add('hidden');
+        adminMain.classList.remove('hidden');
+        headerSubtitle.textContent = 'Panel Privado de Agenda y Fichas';
+        headerBadge.textContent = 'Modo Profesional';
+        if (updateUrl) history.replaceState(null, '', '#admin');
+
+        if (verifiedAdminPassword) {
+          document.getElementById('admin-login-gate').classList.add('hidden');
+          document.getElementById('admin-dashboard-content').classList.remove('hidden');
+          fetchAdminAppointments();
+        }
+      } else {
+        adminMain.classList.add('hidden');
+        clientMain.classList.remove('hidden');
+        headerSubtitle.textContent = 'Agendamiento directo en línea';
+        headerBadge.textContent = 'Sin Registro';
+        if (updateUrl) history.replaceState(null, '', window.location.pathname);
+        loadOccupiedSlotsFromServer();
+      }
+    }
+
+    window.addEventListener('hashchange', detectInitialRoute);
+
+    // -----------------------------------------------------------------------
+    // SINCRONIZACIÓN DE BLOQUES OCUPADOS DESDE GOOGLE SHEETS (GET PÚBLICO)
+    // -----------------------------------------------------------------------
+    async function loadOccupiedSlotsFromServer() {
+      const syncBadge = document.getElementById('calendar-sync-badge');
+      renderCalendar();
+
+      if (!SCRIPT_URL || SCRIPT_URL.startsWith('PEGA_AQUI')) {
+        if (syncBadge) syncBadge.textContent = 'Modo Local (Falta URL Script)';
+        return;
+      }
+
+      try {
+        if (syncBadge) syncBadge.textContent = 'Actualizando...';
+        const res = await fetch(SCRIPT_URL);
+        const json = await res.json();
+        if (json.ok && Array.isArray(json.occupied)) {
+          occupiedSlots = json.occupied;
+          renderCalendar();
+          if (selectedDateStr) handleDayClick(selectedDateStr);
+        }
+        if (syncBadge) syncBadge.textContent = 'Disponibilidad al día';
+      } catch (err) {
+        if (syncBadge) syncBadge.textContent = 'Sin conexión';
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // WIZARD DE 3 PANTALLAS (PACIENTE)
+    // -----------------------------------------------------------------------
+    function goToClientStep(stepNumber) {
+      for (let i = 1; i <= 3; i++) {
+        const screen = document.getElementById(`client-step-${i}`);
+        const pill = document.getElementById(`step-pill-${i}`);
+        if (screen) screen.classList.toggle('hidden', i !== stepNumber);
+        if (pill) {
+          if (i === stepNumber) {
+            pill.className = 'bg-[#065F46] text-[#E6E2D6] rounded-xl px-3 py-2 text-center border border-[#065F46] shadow-sm transition-all';
+          } else if (i < stepNumber) {
+            pill.className = 'bg-[#D6D1C4] text-[#065F46] rounded-xl px-3 py-2 text-center border border-[#065F46]/40 transition-all';
+          } else {
+            pill.className = 'bg-[#E6E2D6] text-stone-500 rounded-xl px-3 py-2 text-center border border-[#B5AE9E] transition-all';
+          }
+        }
+      }
+
+      if (stepNumber === 2 && selectedDateStr && selectedTimeSlot) {
+        document.getElementById('step2-summary-dt').textContent = `${formatSpanishDate(selectedDateStr)} • ${selectedTimeSlot}`;
+        document.getElementById('step2-summary-srv').textContent = `${selectedService} • ${selectedPrice}`;
+      }
+
+      if (stepNumber === 3 && selectedDateStr && selectedTimeSlot) {
+        const patientName = document.getElementById('f-fullname').value.trim() || 'Paciente';
+        document.getElementById('step3-summary-patient').textContent = `${patientName} • ${selectedService}`;
+        document.getElementById('step3-summary-dt').textContent = `${formatSpanishDate(selectedDateStr)} • ${selectedTimeSlot}`;
+        document.getElementById('payment-amount-badge').textContent = `Total: ${selectedPrice}`;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectService(serviceName, priceText) {
+      selectedService = serviceName;
+      selectedPrice = priceText;
+      const btn1 = document.getElementById('srv-btn-1');
+      const btn2 = document.getElementById('srv-btn-2');
+      const isFirst = serviceName.includes('Primera');
+
+      btn1.className = isFirst
+        ? 'p-3.5 rounded-xl border-2 border-[#065F46] bg-[#D6D1C4] text-left transition'
+        : 'p-3.5 rounded-xl border border-[#B5AE9E] bg-[#F3EFE4] hover:bg-[#DDD8CA] text-left transition';
+
+      btn2.className = !isFirst
+        ? 'p-3.5 rounded-xl border-2 border-[#065F46] bg-[#D6D1C4] text-left transition'
+        : 'p-3.5 rounded-xl border border-[#B5AE9E] bg-[#F3EFE4] hover:bg-[#DDD8CA] text-left transition';
+    }
+
+    // -----------------------------------------------------------------------
+    // CALENDARIO INTERACTIVO
+    // -----------------------------------------------------------------------
+    const MONTH_NAMES = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    const DAY_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+    function formatSpanishDate(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return `${DAY_NAMES[dt.getDay()]} ${d} ${MONTH_NAMES[m - 1].slice(0, 3)} ${y}`;
+    }
+
+    function changeMonth(delta) {
+      viewMonth += delta;
+      if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+      else if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+      renderCalendar();
+    }
+
+    function isSlotOccupied(dateStr, time) {
+      return occupiedSlots.some(s => s.dateStr === dateStr && s.time === time);
+    }
+
+    function renderCalendar() {
+      const label = document.getElementById('calendar-month-label');
+      const grid = document.getElementById('calendar-days-grid');
+      if (!label || !grid) return;
+
+      label.textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
+      grid.innerHTML = '';
+
+      const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+      const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+      const now = new Date();
+      const minDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      for (let i = 0; i < startOffset; i++) {
+        grid.appendChild(document.createElement('div'));
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(viewYear, viewMonth, day);
+        const dayOfWeek = dateObj.getDay();
+        const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+        const isPast = dateObj < minDate;
+        const isSunday = dayOfWeek === 0;
+        const bookedCount = occupiedSlots.filter(a => a.dateStr === dateStr).length;
+        const isFull = bookedCount >= DAILY_SLOTS.length;
+        const isDisabled = isPast || isSunday || isFull;
+        const isSelected = selectedDateStr === dateStr;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.disabled = isDisabled;
+        btn.onclick = () => handleDayClick(dateStr);
+
+        if (isDisabled) {
+          btn.className = 'py-2.5 rounded-xl text-xs font-medium bg-[#D6D1C4]/50 text-stone-400 cursor-not-allowed';
+        } else if (isSelected) {
+          btn.className = 'py-2.5 rounded-xl text-xs font-extrabold bg-[#065F46] text-[#E6E2D6] shadow-sm transition';
+        } else {
+          btn.className = 'py-2.5 rounded-xl text-xs font-bold bg-[#F3EFE4] hover:bg-[#DDD8CA] text-stone-900 border border-[#B5AE9E] transition';
+        }
+        btn.textContent = day;
+        grid.appendChild(btn);
+      }
+    }
+
+    function handleDayClick(dateStr) {
+      selectedDateStr = dateStr;
+      selectedTimeSlot = null;
+      renderCalendar();
+
+      const slotsWrapper = document.getElementById('time-slots-wrapper');
+      const slotsGrid = document.getElementById('calendar-slots-grid');
+      const dayTitle = document.getElementById('selected-day-title');
+
+      dayTitle.textContent = formatSpanishDate(dateStr);
+      slotsWrapper.classList.remove('hidden');
+      slotsGrid.innerHTML = '';
+
+      DAILY_SLOTS.forEach(slot => {
+        const occupied = isSlotOccupied(dateStr, slot);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.disabled = occupied;
+        btn.onclick = () => {
+          selectedTimeSlot = slot;
+          goToClientStep(2);
+        };
+
+        if (occupied) {
+          btn.className = 'py-2.5 px-2 rounded-xl text-xs font-medium bg-[#D6D1C4] text-stone-500 border border-[#B5AE9E] cursor-not-allowed line-through';
+        } else {
+          btn.className = 'py-2.5 px-2 rounded-xl text-xs font-bold bg-[#F3EFE4] hover:bg-[#065F46] hover:text-[#E6E2D6] text-stone-900 border border-[#B5AE9E] transition';
+        }
+        btn.textContent = slot;
+        slotsGrid.appendChild(btn);
+      });
+    }
+
+    function handleStep2Next(e) {
+      e.preventDefault();
+      if (!selectedDateStr || !selectedTimeSlot) { goToClientStep(1); return; }
+      goToClientStep(3);
+    }
+
+    // -----------------------------------------------------------------------
+    // COPIAR DATOS BANCARIOS + COMPROBANTE + ENVÍO FINAL (POST A APPS SCRIPT)
+    // -----------------------------------------------------------------------
+    function copyBankDetails() {
+      const textToCopy = ['Nombre', '12.345.678-9', 'Banco Estado', 'Cuenta Vista', '12345678', 'pagos@nombre.cl'].join('\n');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const label = document.getElementById('copy-bank-label');
+          label.textContent = '¡Datos copiados!';
+          setTimeout(() => { label.textContent = 'Copiar datos'; }, 2500);
+        });
+      }
+    }
+
+    function handleReceiptUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      uploadedReceiptName = file.name;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 1100;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          uploadedReceiptBase64 = canvas.toDataURL('image/jpeg', 0.82);
+
+          document.getElementById('receipt-preview-img').src = uploadedReceiptBase64;
+          document.getElementById('receipt-file-name').textContent = uploadedReceiptName;
+          document.getElementById('receipt-dropzone').classList.add('hidden');
+          document.getElementById('receipt-preview-box').classList.remove('hidden');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearReceiptFile() {
+      uploadedReceiptBase64 = null;
+      uploadedReceiptName = '';
+      document.getElementById('f-receipt').value = '';
+      document.getElementById('receipt-preview-box').classList.add('hidden');
+      document.getElementById('receipt-dropzone').classList.remove('hidden');
+    }
+
+    function formatRutInput(input) {
+      let clean = input.value.replace(/[^0-9kK]/g, '').toUpperCase();
+      if (clean.length <= 1) { input.value = clean; return; }
+      const dv = clean.slice(-1);
+      let num = clean.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      input.value = `${num}-${dv}`;
+    }
+
+    async function handleFinalBookingSubmit(e) {
+      e.preventDefault();
+      const errBox = document.getElementById('client-submit-error');
+      const submitBtn = document.getElementById('btn-final-agendar');
+      errBox.classList.add('hidden');
+
+      if (!selectedDateStr || !selectedTimeSlot || !uploadedReceiptBase64) return;
+
+      const dataPayload = {
+        dateStr: selectedDateStr,
+        dateFormatted: formatSpanishDate(selectedDateStr),
+        time: selectedTimeSlot,
+        service: selectedService,
+        price: selectedPrice,
+        fullname: document.getElementById('f-fullname').value.trim(),
+        rut: document.getElementById('f-rut').value.trim(),
+        dob: document.getElementById('f-dob').value,
+        phone: document.getElementById('f-phone').value.trim(),
+        email: document.getElementById('f-email').value.trim(),
+        address: document.getElementById('f-address').value.trim(),
+        goals: document.getElementById('f-goals').value.trim(),
+        supplements: document.getElementById('f-supplements').value.trim(),
+        receiptData: uploadedReceiptBase64
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando ficha y comprobante...';
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'create', data: dataPayload })
+        });
+        const result = await response.json();
+
+        if (!result.ok) {
+          throw new Error(result.error || 'No se pudo completar la reserva.');
+        }
+
+        occupiedSlots.push({ dateStr: selectedDateStr, time: selectedTimeSlot });
+        document.getElementById('patient-payment-form').classList.add('hidden');
+        document.getElementById('step3-back-bar').classList.add('hidden');
+        document.getElementById('booking-success-screen').classList.remove('hidden');
+      } catch (err) {
+        errBox.textContent = err.message;
+        errBox.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Agendar';
+      }
+    }
+
+    function resetClientFlow() {
+      document.getElementById('patient-data-form').reset();
+      document.getElementById('patient-payment-form').reset();
+      clearReceiptFile();
+      document.getElementById('patient-payment-form').classList.remove('hidden');
+      document.getElementById('step3-back-bar').classList.remove('hidden');
+      document.getElementById('booking-success-screen').classList.add('hidden');
+      document.getElementById('time-slots-wrapper').classList.add('hidden');
+      selectedDateStr = null;
+      selectedTimeSlot = null;
+      goToClientStep(1);
+      loadOccupiedSlotsFromServer();
+    }
+
+    // -----------------------------------------------------------------------
+    // VISTA NUTRICIONISTA (#admin): LOGIN POR CLAVE + LISTADO + POPUP + CORREO
+    // -----------------------------------------------------------------------
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const input = document.getElementById('admin-password-input');
+      const errBox = document.getElementById('admin-login-error');
+      const btn = document.getElementById('btn-admin-login');
+      const pass = input.value.trim();
+
+      errBox.classList.add('hidden');
+      btn.disabled = true;
+      btn.textContent = 'Verificando...';
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getAdminData', password: pass })
+        });
+        const json = await res.json();
+
+        if (!json.ok) {
+          throw new Error(json.error || 'Clave incorrecta.');
+        }
+
+        verifiedAdminPassword = pass;
+        adminAppointments = json.appointments || [];
+        document.getElementById('admin-login-gate').classList.add('hidden');
+        document.getElementById('admin-dashboard-content').classList.remove('hidden');
+        renderAdminAppointments();
+      } catch (err) {
+        errBox.textContent = err.message;
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Ingresar al Panel';
+      }
+    }
+
+    async function fetchAdminAppointments() {
+      if (!verifiedAdminPassword) return;
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getAdminData', password: verifiedAdminPassword })
+        });
+        const json = await res.json();
+        if (json.ok) {
+          adminAppointments = json.appointments || [];
+          renderAdminAppointments();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function calculateAge(dobStr) {
+      if (!dobStr) return '--';
+      const [y, m, d] = String(dobStr).slice(0, 10).split('-').map(Number);
+      if (!y || !m || !d) return '--';
+      const today = new Date();
+      let age = today.getFullYear() - y;
+      if (today.getMonth() + 1 < m || (today.getMonth() + 1 === m && today.getDate() < d)) age--;
+      return `${age} años`;
+    }
+
+    function renderAdminAppointments() {
+      const list = document.getElementById('admin-appointments-list');
+      const kpiTotal = document.getElementById('admin-kpi-total');
+      const kpiPending = document.getElementById('admin-kpi-pending');
+      if (!list) return;
+
+      kpiTotal.textContent = adminAppointments.length;
+      kpiPending.textContent = adminAppointments.filter(a => !a.confirmed).length;
+
+      list.innerHTML = '';
+      if (adminAppointments.length === 0) {
+        list.innerHTML = `
+          <div class="p-6 text-center bg-[#F3EFE4] rounded-xl border border-dashed border-[#B5AE9E] text-xs text-stone-600">
+            No hay horas registradas en la planilla aún.
+          </div>
+        `;
+        return;
+      }
+
+      adminAppointments.forEach(app => {
+        const card = document.createElement('article');
+        card.className = `bg-[#F3EFE4] border ${app.confirmed ? 'border-[#065F46]' : 'border-[#B5AE9E]'} rounded-2xl p-4 sm:p-5 space-y-3`;
+        card.innerHTML = `
+          <div class="flex flex-wrap items-start justify-between gap-2 pb-3 border-b border-[#B5AE9E]/70">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-lg bg-[#065F46] text-[#E6E2D6] text-xs font-bold">
+                  ${app.dateFormatted} • ${app.time}
+                </span>
+                <span class="text-xs font-semibold text-stone-700">${app.service} (${app.price})</span>
+                ${app.confirmed
+                  ? `<span class="px-2 py-0.5 rounded bg-emerald-800/15 text-[#065F46] text-[10px] font-bold">✓ Confirmada por Correo</span>`
+                  : `<span class="px-2 py-0.5 rounded bg-amber-600/20 text-amber-900 text-[10px] font-bold">⏳ Pendiente de Revisión</span>`
+                }
+              </div>
+              <h4 class="font-display text-base font-extrabold text-stone-900 mt-2">
+                ${app.fullname} <span class="text-xs font-mono font-normal text-stone-600">(${app.rut} • ${calculateAge(app.dob)})</span>
+              </h4>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <!-- Botón Popup Comprobante -->
+              <button
+                type="button"
+                onclick="openReceiptModal('${app.fileId}', '${app.fullname.replace(/'/g, "\\'")}')"
+                title="Ver foto del comprobante"
+                class="p-2 rounded-xl bg-[#D6D1C4] hover:bg-[#C8C2B3] text-[#065F46] border border-[#B5AE9E] text-xs font-bold transition flex items-center gap-1"
+              >
+                <span>🧾</span>
+                <span class="hidden sm:inline">Comprobante</span>
+              </button>
+
+              <!-- Botón Confirmar Cita y Enviar Correo Automático -->
+              ${!app.confirmed ? `
+                <button
+                  type="button"
+                  id="btn-confirm-${app.id}"
+                  onclick="confirmAppointmentByEmail('${app.id}')"
+                  class="px-3 py-2 rounded-xl bg-[#065F46] hover:bg-[#047857] text-[#E6E2D6] text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
+                >
+                  <span>✉️</span>
+                  <span>Confirmar Cita</span>
+                </button>
+              ` : ''}
+
+              <!-- Botón Eliminar / Liberar Bloque -->
+              <button
+                type="button"
+                onclick="deleteAppointmentFromSheet('${app.id}')"
+                title="Eliminar y liberar horario"
+                class="p-2 rounded-xl bg-[#D6D1C4] hover:bg-red-800/20 text-stone-800 hover:text-red-900 border border-[#B5AE9E] text-xs transition"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-stone-700">
+            <div><strong class="text-stone-900">Correo:</strong> ${app.email}</div>
+            <div><strong class="text-stone-900">Teléfono:</strong> ${app.phone}</div>
+            <div><strong class="text-stone-900">Dirección:</strong> ${app.address}</div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
+            <div class="bg-[#E6E2D6] p-3 rounded-xl border border-[#B5AE9E]/80">
+              <span class="block text-[10px] font-bold uppercase text-[#065F46] mb-1">Objetivos</span>
+              <p class="text-stone-800 leading-relaxed">${app.goals}</p>
+            </div>
+            <div class="bg-[#E6E2D6] p-3 rounded-xl border border-[#B5AE9E]/80">
+              <span class="block text-[10px] font-bold uppercase text-[#065F46] mb-1">Suplementos</span>
+              <p class="text-stone-800 leading-relaxed">${app.supplements}</p>
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+   // Popup Modal Comprobante (Carga directa vía Apps Script)
+    async function openReceiptModal(fileId, patientName) {
+      const modal = document.getElementById('receipt-viewer-modal');
+      const imgEl = document.getElementById('modal-receipt-image');
+      const patientEl = document.getElementById('modal-receipt-patient');
+      const driveLink = document.getElementById('modal-receipt-drive-link');
+
+      patientEl.textContent = `Paciente: ${patientName} • Cargando imagen...`;
+      imgEl.classList.add('hidden');
+      imgEl.src = '';
+      driveLink.href = `https://drive.google.com/file/d/${fileId}/view`;
+      modal.classList.remove('hidden');
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'getReceipt',
+            password: verifiedAdminPassword,
+            fileId: fileId
+          })
+        });
+        const json = await res.json();
+
+        if (json.ok && json.dataUrl) {
+          imgEl.src = json.dataUrl;
+          imgEl.classList.remove('hidden');
+          patientEl.textContent = `Paciente: ${patientName}`;
+        } else {
+          patientEl.textContent = `Paciente: ${patientName} (No se pudo previsualizar)`;
+        }
+      } catch (err) {
+        patientEl.textContent = `Paciente: ${patientName} (Error de conexión)`;
+      }
+    }
+
+    function closeReceiptModal() {
+      document.getElementById('receipt-viewer-modal').classList.add('hidden');
+      document.getElementById('modal-receipt-image').src = '';
+    }
+
+    // Confirmar cita y disparar correo automático al paciente
+    async function confirmAppointmentByEmail(id) {
+      const btn = document.getElementById(`btn-confirm-${id}`);
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳</span><span>Enviando correo...</span>';
+      }
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'confirm',
+            password: verifiedAdminPassword,
+            id: id
+          })
+        });
+        const json = await res.json();
+        if (json.ok) {
+          const target = adminAppointments.find(a => a.id === id);
+          if (target) target.confirmed = true;
+          renderAdminAppointments();
+        }
+      } catch (err) {
+        console.error(err);
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>✉️</span><span>Confirmar Cita</span>';
+        }
+      }
+    }
+
+    // Eliminar reserva y liberar horario en Sheets
+    async function deleteAppointmentFromSheet(id) {
+      if (!confirm('¿Seguro que deseas eliminar esta reserva y liberar el horario?')) return;
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'delete',
+            password: verifiedAdminPassword,
+            id: id
+          })
+        });
+        const json = await res.json();
+        if (json.ok) {
+          adminAppointments = adminAppointments.filter(a => a.id !== id);
+          renderAdminAppointments();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      detectInitialRoute();
+    });
+  </script>
+</body>
+</html>
