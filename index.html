@@ -1571,7 +1571,7 @@
         app.status = 'Confirmada';
         renderAdminAppointments();
         if (db) {
-          await db.from('comprobantes').update({ estado: 'Confirmada' }).eq('id', id);
+          await db.storage.from('comprobantes').update({ estado: 'Confirmada' }).eq('id', id);
         }
       }
     }
@@ -1605,7 +1605,7 @@
         renderAdminAppointments();
         closeDeleteModal();
         if (db) {
-          await db.from('comprobantes').delete().eq('id', targetId);
+          await db.storage.from('comprobantes').delete().eq('id', targetId);
         }
       }
     };
